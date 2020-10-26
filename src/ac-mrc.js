@@ -18,13 +18,12 @@ helpers.view.teaser();
 const githubCreate = ({ name, type, target }) => {
   return new Promise(
     async (resolve, reject) =>
-      await execa('../../ac-contributions/gh-cli/bin/gh', [
+      await execa('gh', [
         'repo',
         'create',
         `--${type || 'public'}`,
         '--confirm',
-        '--bypass-io',
-        `--init-base-dir=${target}`,
+        `--init-base-dir=${target}`, // https://github.com/cli/cli/pull/2098
         name,
       ])
         .then((res) => resolve(res))
