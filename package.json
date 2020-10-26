@@ -1,0 +1,87 @@
+{
+  "name": "ac-multi-repo-creator-cli",
+  "version": "0.0.1",
+  "description": "A CLI helper tool to create multiple GitHub repository at once",
+  "bin": {
+    "ac-mrc": "./lib/ac-mrc",
+    "ac-mrc-cli": "./lib/ac-mrc"
+  },
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "yarn build-clean && babel src -d lib && yarn build-bin",
+    "build-bin": "mv ./lib/ac-mrc.js ./lib/ac-mrc && chmod +x ./lib/ac-mrc",
+    "build-clean": "rm -rf ./lib/",
+    "clean": "rimraf build",
+    "dev": "cross-env BABEL_ENV=development babel-node src/ac-mrc.js",
+    "lint": "eslint src",
+    "format": "prettier --write \"{src}/**/*.js\""
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdullahceylan/ac-multi-repo-creator-cli.git"
+  },
+  "keywords": [
+    "boilerplate",
+    "npm",
+    "module",
+    "node",
+    "javascript",
+    "cli",
+    "github",
+    "repo",
+    "multiple",
+    "bulk"
+  ],
+  "author": "Abdullah Musab Ceylan <abdullahmceylan@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abdullahceylan/ac-multi-repo-creator-cli/issues"
+  },
+  "homepage": "https://github.com/abdullahceylan/ac-multi-repo-creator-cli#readme",
+  "dependencies": {
+    "@abdullahceylan/listr-aggregate-renderer": "^0.0.5",
+    "boxen": "^4.1.0",
+    "commander": "^6.1.0",
+    "copyfiles": "^2.4.0",
+    "execa": "^4.0.3",
+    "inquirer": "^7.3.3",
+    "kleur": "^4.1.3",
+    "line-reader": "^0.4.0",
+    "listr": "^0.14.3",
+    "listr-update-renderer": "^0.5.0",
+    "listr-verbose-renderer": "^0.6.0",
+    "mkdirp": "^1.0.4",
+    "node-notifier": "^8.0.0",
+    "pkginfo": "^0.4.1",
+    "release-it": "^14.0.3",
+    "semver": "^7.3.2",
+    "update-notifier": "^5.0.0"
+  },
+  "devDependencies": {
+    "@abdullahceylan/eslint-config": "^1.1.0",
+    "@abdullahceylan/prettier-config": "^1.1.0",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+    "@babel/polyfill": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/register": "^7.12.1",
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "babel-preset-minify": "^0.5.1",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "rimraf": "^3.0.2"
+  }
+}
