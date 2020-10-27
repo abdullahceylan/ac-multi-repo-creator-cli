@@ -46,7 +46,10 @@ program
     '-T, --target-dir <targetDir>',
     'target base dir for git initialization after creation. Default ./target',
   )
-  .option('-S, --source-dir <sourceDir>', 'source base dir to be used for pushing to the remote')
+  .option(
+    '-S, --source-dir <sourceDir>',
+    'source base dir to be used for pushing to the remote. Default ./source',
+  )
   .option('-L, --list-file <listFile>', 'repo list file (.txt)')
   .option('-N, --no-push', 'no commit and push any content to newly created repo')
   .option(
