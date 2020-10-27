@@ -78,6 +78,14 @@ program
     const tasks = new Listr(
       [
         {
+          title: 'Checking prerequisities',
+          task: async (ctx, task) => {
+            const ghCheck = await helpers.view.warnAboutGHVersion();
+
+            return ghCheck;
+          },
+        },
+        {
           title: 'Getting the repo list',
           task: async (ctx, task) => {
             ctx.repos = [];

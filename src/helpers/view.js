@@ -3,6 +3,7 @@ import boxen from 'boxen';
 import { white, red, yellow } from 'kleur';
 import updater from 'update-notifier';
 import notifier from 'node-notifier';
+import execa from 'execa';
 import helpers from './index';
 
 // Info box options
@@ -68,6 +69,22 @@ module.exports = {
 
   warn(message) {
     this.log(`${yellow('WARNING:')} ${message}`);
+  },
+
+  async warnAboutGHVersion() {
+    const MIN_GH_VERSION = '1.1.0';
+    return new Promise(async (resolve, reject) => {
+      const { stdout } = await execa('gh', ['--version']);
+
+      const output = stdout.split(' ');
+      const version = output?.[2] || 0;
+
+      if (semver.satisfies(version, `>=${MIN_GH_VERSION}`) === false) {
+        reject(new Error(`Please upgrade your GitHub CLI to ${MIN_GH_VERSION}. Yours ${version}`));
+      } else {
+        resolve(true);
+      }
+    });
   },
 
   warnAboutNodeVersion() {
