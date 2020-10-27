@@ -271,6 +271,12 @@ program
     // });
   });
 
+program
+  .command('delete')
+  .description('Perform deleting')
+  .action(() => {
+    helpers.view.log('Multiple repo deletion is currently not available.');
+  });
 program.parse(process.argv);
 
 // if (program.debug) {
