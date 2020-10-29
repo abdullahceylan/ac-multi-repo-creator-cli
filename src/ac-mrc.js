@@ -23,7 +23,7 @@ const githubCreate = ({ name, type, target }) => {
         'create',
         `--${type || 'public'}`,
         '--confirm',
-        `--init-base-dir=${target}`, // https://github.com/cli/cli/pull/2098
+        //`--init-base-dir=${target}`, // https://github.com/cli/cli/pull/2098
         name,
       ])
         .then((res) => resolve(res))
@@ -153,7 +153,6 @@ program
         {
           title: 'Bulk creation',
           task: (ctx) => {
-            console.log('repos', ctx.repos);
             const repoTasks = ctx.repos.map((repo) => ({
               title: repo?.name,
               task: (ctx) => {
@@ -161,15 +160,15 @@ program
                   {
                     title: 'Create and initialize',
                     task: (ctx, task) => {
-                      let processStepError;
+                      ctx.processStepError = '';
 
                       return githubCreate({ ...repo, target: ctx.targetDir })
                         .then(() => {
                           const split = repo?.name.split('/');
                           const repoName = split[1] ? split[1] : repo?.name;
-                          // task.title = `Copy existing files from source`;
-
                           const targetWithRepo = `${ctx.targetDir}/${repoName}`;
+
+                          // task.title = `Copy existing files from source`;
 
                           if (!program.noPush) {
                             return helpers.assets
@@ -179,12 +178,12 @@ program
                               )
                               .then(() => {
                                 task.title = `Stage files for the initial commits`;
-                                processStepError = 'Stage process failed';
+                                ctx.processStepError = 'Stage process failed';
                                 return execa('git', ['-C', targetWithRepo, 'add', '.']);
                               })
                               .then(() => {
                                 task.title = `Commit the staged files`;
-                                processStepError = 'Staged files couldnt commit';
+                                ctx.processStepError = 'Staged files couldnt commit';
                                 return execa('git', [
                                   '-C',
                                   targetWithRepo,
@@ -195,7 +194,7 @@ program
                               })
                               .then(() => {
                                 task.title = `Push the changes`;
-                                processStepError = 'Commited changes couldnt push';
+                                ctx.processStepError = 'Commited changes couldnt push';
                                 return execa('git', [
                                   '-C',
                                   targetWithRepo,
