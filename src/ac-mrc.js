@@ -28,7 +28,7 @@ const githubCreate = ({ name, type, target }) => {
       ])
         .then((res) => resolve(res))
         .catch((err) => {
-          //helpers.view.error(err, program.debug)
+          helpers.view.error(err.shortMessage, program.debug);
           reject(err);
         }),
   );
@@ -41,7 +41,10 @@ program.version(helpers.info.getCliVersion());
 program
   .option('-D, --debug', 'output extra debugging')
   .option('-P, --private', 'creates private repos | Default `public`')
-  .option('-O, --organization <organizationName>', 'organization name to be used as base for repos')
+  .option(
+    '-O, --organization <organizationName>',
+    'organization name or your GitHub username (if you are creating directly in your root) to be used as base for repos',
+  )
   .option(
     '-T, --target-dir <targetDir>',
     'target base dir for git initialization after creation. Default ./target',
@@ -163,12 +166,11 @@ program
                       ctx.processStepError = '';
 
                       return githubCreate({ ...repo, target: ctx.targetDir })
-                        .then(() => {
+                        .then((res) => {
                           const split = repo?.name.split('/');
                           const repoName = split[1] ? split[1] : repo?.name;
+                          const organizationName = split[0] ? split[0] : program.organization;
                           const targetWithRepo = `${ctx.targetDir}/${repoName}`;
-
-                          // task.title = `Copy existing files from source`;
 
                           if (!program.noPush) {
                             return helpers.assets
@@ -177,11 +179,29 @@ program
                                 targetWithRepo,
                               )
                               .then(() => {
+                                task.title = `Initialize the new repo`;
+                                ctx.processStepError = 'Initialize failed';
+                                return execa('git', ['init', targetWithRepo]);
+                              })
+                              .then(() => {
+                                task.title = `Add remote origin`;
+                                ctx.processStepError = 'Init process failed';
+                                return execa('git', [
+                                  '-C',
+                                  targetWithRepo,
+                                  'remote',
+                                  'add',
+                                  '-f',
+                                  'origin',
+                                  `https://github.com/${organizationName}/${repoName}.git`,
+                                ]);
+                              })
+                              .then((res) => {
                                 task.title = `Stage files for the initial commits`;
                                 ctx.processStepError = 'Stage process failed';
                                 return execa('git', ['-C', targetWithRepo, 'add', '.']);
                               })
-                              .then(() => {
+                              .then((res) => {
                                 task.title = `Commit the staged files`;
                                 ctx.processStepError = 'Staged files couldnt commit';
                                 return execa('git', [
